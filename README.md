@@ -3,7 +3,7 @@
 ### 1. Relevant Articles:
 - [Introduction to Redis](https://redis.io/)
 - [Introduction to Spring Data Redis](https://docs.spring.io/spring-data/data-redis/docs/current/reference/html/)
-- [Working with Redis](http://openmymind.net/2011/11/8/Redis-Zero-To-Master-In-30-Minutes-Part-1/)
+- [Redis Tutorial](http://openmymind.net/2011/11/8/Redis-Zero-To-Master-In-30-Minutes-Part-1/)
 
 ### 2. Installing Redis
 Follow [this](https://redis.io/topics/quickstart) to install Redis.
@@ -125,7 +125,7 @@ public class Bus implements Serializable
 }
 ```
 
-- `@RedisHash("Bus")` to define prefixes used to create the actual key for the Redis Hash. Example is `bus`.
+- `@RedisHash` to define prefixes used to create the actual key for the Redis Hash. Example is `bus`.
 - `@Id` as well as those named `id` are considered as the identifier properties.
 - `@Indexed` and `@GeoIndexed` are used to enable lookup operations based on native Redis structures. (Read [this](https://redis.io/topics/indexes) for more information)
 
@@ -138,6 +138,16 @@ Spring data JPA is support for Redis. You can use query method but it only suppo
 |Or|findByLastnameOrFirstname|SUNION …:firstname:rand …:lastname:al’thor|
 |Is,Equals|findByFirstname, findByFirstnameIs,findByFirstnameEquals|SINTER …:firstname:rand|
 |Top,First|findFirst10ByFirstname, findTop5ByFirstname||
+
+Sample:
+```java
+@Repository
+public interface BusRepository
+        extends JpaRepository<Bus, String>
+{
+    List<Bus> findByLocationNear(Point point, Distance distance);
+}
+```
 
 Using derived query methods might not always be sufficient to model the queries to execute. `RedisCallback` and `RedisTemplate` offers more control over the actual matching of index structures or even custom added ones.
 
