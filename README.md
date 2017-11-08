@@ -131,12 +131,13 @@ public class Bus implements Serializable
 
 ### 6. Redis Repository
 Spring data JPA is support for Redis. You can use query method but it only support some simple keyword inside method names.
+
 |Keyword|Sample|Redis snippet|
-|-------|------|-------------|
+|---|---|---|
 |And|findByLastnameAndFirstname|SINTER …:firstname:rand …:lastname:al’thor|
 |Or|findByLastnameOrFirstname|SUNION …:firstname:rand …:lastname:al’thor|
 |Is,Equals|findByFirstname, findByFirstnameIs,findByFirstnameEquals|SINTER …:firstname:rand|
-|Top,First|findFirst10ByFirstname, findTop5ByFirstname|
+|Top,First|findFirst10ByFirstname, findTop5ByFirstname||
 
 Using derived query methods might not always be sufficient to model the queries to execute. `RedisCallback` and `RedisTemplate` offers more control over the actual matching of index structures or even custom added ones.
 
