@@ -4,6 +4,10 @@ import com.yofiv.example.redis.dto.BusDTO;
 import com.yofiv.example.redis.entity.Bus;
 import com.yofiv.example.redis.repo.BusCustomRepository;
 import com.yofiv.example.redis.repo.BusRepository;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.Metric;
+import org.springframework.data.geo.Metrics;
+import org.springframework.data.geo.Point;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -67,5 +71,15 @@ public class BusController
                            @RequestParam Long toTime)
     {
         return busCustomRepository.findBusCreatedDateBetween(fromTime, toTime);
+    }
+
+    @RequestMapping(value = "/fetchBusNearLocation",
+            method = RequestMethod.GET)
+    public List<Bus> fetchBusNearLocation(@RequestParam String longitude,
+                                          @RequestParam String latitude,
+                                          @RequestParam double distance)
+    {
+        return busRepository.findByLocationNear(new Point(Double.valueOf(longitude), Double.valueOf(latitude))
+                , new Distance(distance, Metrics.KILOMETERS));
     }
 }

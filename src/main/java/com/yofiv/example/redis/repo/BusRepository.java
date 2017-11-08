@@ -13,6 +13,4 @@ public interface BusRepository
         extends JpaRepository<Bus, String>
 {
     List<Bus> findByLocationNear(Point point, Distance distance);
-
-    List<Bus> findByCreatedDateBetween(Long fromTime, Long toTime);
 }
