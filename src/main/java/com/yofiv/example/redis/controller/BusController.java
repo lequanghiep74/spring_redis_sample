@@ -2,6 +2,7 @@ package com.yofiv.example.redis.controller;
 
 import com.yofiv.example.redis.dto.BusDTO;
 import com.yofiv.example.redis.entity.Bus;
+import com.yofiv.example.redis.repo.BusCustomRepository;
 import com.yofiv.example.redis.repo.BusRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,9 @@ public class BusController
     @Inject
     BusRepository busRepository;
 
+    @Inject
+    BusCustomRepository busCustomRepository;
+
     @RequestMapping(value = "/create",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,9 +39,10 @@ public class BusController
         bus.setLocation(busDTO.getLocation());
         bus.setNumPassenger(busDTO.getNumPassenger());
         bus.setPlateNo(busDTO.getPlateNo());
-        bus.setCreatedDate(new Date());
-
+        bus.setCreatedDate(new Date().getTime());
         busRepository.save(bus);
+        busCustomRepository.addBusToSearchByCreatedDate(bus.getId(), bus.getCreatedDate());
+
         return new ResponseEntity<>(new HttpHeaders(), HttpStatus.CREATED);
     }
 
@@ -61,6 +66,6 @@ public class BusController
     public List<Bus> fetch(@RequestParam Long fromTime,
                            @RequestParam Long toTime)
     {
-        return busRepository.findByCreatedDateBetween(fromTime, toTime);
+        return busCustomRepository.findBusCreatedDateBetween(fromTime, toTime);
     }
 }

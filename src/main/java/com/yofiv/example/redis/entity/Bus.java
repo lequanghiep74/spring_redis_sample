@@ -8,7 +8,6 @@ import org.springframework.data.redis.core.index.Indexed;
 import org.springframework.data.geo.Point;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @RedisHash("Bus")
 public class Bus
@@ -20,15 +19,13 @@ public class Bus
     @GeoIndexed
     private Point location;
     private int numPassenger;
-    @Indexed
-    @CreatedDate
-    private Date createdDate;
+    private long createdDate;
 
     public Bus()
     {
     }
 
-    public Bus(final String id, final String plateNo, final Point location, final int numPassenger, final Date createdDate)
+    public Bus(final String id, final String plateNo, final Point location, final int numPassenger, final long createdDate)
     {
         this.id = id;
         this.plateNo = plateNo;
@@ -77,12 +74,12 @@ public class Bus
         this.numPassenger = numPassenger;
     }
 
-    public Date getCreatedDate()
+    public long getCreatedDate()
     {
         return createdDate;
     }
 
-    public void setCreatedDate(final Date createdDate)
+    public void setCreatedDate(final long createdDate)
     {
         this.createdDate = createdDate;
     }
