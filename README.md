@@ -53,23 +53,23 @@ Follow [this](https://redis.io/topics/quickstart) to install Redis.
 Let’s start with the configuration bean definitions:
 
 ```java
-    @Bean
-    JedisConnectionFactory jedisConnectionFactory()
-    {
-        JedisConnectionFactory connectionFactory = new JedisConnectionFactory();
-        connectionFactory.setHostName(redisHost);
-        connectionFactory.setPort(redisPort);
-        return connectionFactory;
-    }
+@Bean
+JedisConnectionFactory jedisConnectionFactory()
+{
+    JedisConnectionFactory connectionFactory = new JedisConnectionFactory();
+    connectionFactory.setHostName(redisHost);
+    connectionFactory.setPort(redisPort);
+    return connectionFactory;
+}
 
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate()
-    {
-        final RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
-        template.setConnectionFactory(jedisConnectionFactory());
-        template.setKeySerializer(new StringRedisSerializer());
-        return template;
-    }
+@Bean
+public RedisTemplate<String, Object> redisTemplate()
+{
+    final RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
+    template.setConnectionFactory(jedisConnectionFactory());
+    template.setKeySerializer(new StringRedisSerializer());
+    return template;
+}
 ``` 
 
 Use `setHostName` and `setPort` in `JedisConnectionFactory` to set hostname and port of redis server (Default is `127.0.0.1:6379`).
@@ -82,28 +82,28 @@ Create class extend `KeyspaceConfiguration` and override method `getKeyspaceSett
 
 ```java
 public class MyKeyspaceConfiguration extends KeyspaceConfiguration
+{
+
+    @Override
+    public boolean hasSettingsFor(Class<?> type)
     {
-
-        @Override
-        public boolean hasSettingsFor(Class<?> type)
-        {
-            return true;
-        }
-
-        @Override
-        public KeyspaceSettings getKeyspaceSettings(Class<?> type)
-        {
-            KeyspaceSettings keyspaceSettings = new KeyspaceSettings(type, "my-keyspace");
-            keyspaceSettings.setTimeToLive(3600L);
-            return keyspaceSettings;
-        }
+        return true;
     }
+
+    @Override
+    public KeyspaceSettings getKeyspaceSettings(Class<?> type)
+    {
+        KeyspaceSettings keyspaceSettings = new KeyspaceSettings(type, "my-keyspace");
+        keyspaceSettings.setTimeToLive(3600L);
+        return keyspaceSettings;
+    }
+}
 ```
 
 Add annotation `@EnableRedisRepositories` to use `KeyspaceConfiguration` you defined above.
 
 ```java
-    @EnableRedisRepositories(keyspaceConfiguration = MyKeyspaceConfiguration.class)
+@EnableRedisRepositories(keyspaceConfiguration = MyKeyspaceConfiguration.class)
 ```
 
 ### 5. Redis Entity
