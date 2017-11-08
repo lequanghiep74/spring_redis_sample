@@ -39,9 +39,9 @@ public class BusController
         bus.setLocation(busDTO.getLocation());
         bus.setNumPassenger(busDTO.getNumPassenger());
         bus.setPlateNo(busDTO.getPlateNo());
-        bus.setCreatedDate(new Date().getTime());
+        bus.setCreatedDate(new Date());
         busRepository.save(bus);
-        busCustomRepository.addBusToSearchByCreatedDate(bus.getId(), bus.getCreatedDate());
+        busCustomRepository.addBusToSearchByCreatedDate(bus.getId(), bus.getCreatedDate().getTime());
 
         return new ResponseEntity<>(new HttpHeaders(), HttpStatus.CREATED);
     }
