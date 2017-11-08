@@ -160,4 +160,4 @@ redisTemplate.opsForZSet().rangeByScore("Bus:createdDate", fromDate, toDate);
 ```
 
 ### 7. Sample
-- [View sample](git@github.com:lequanghiep74/spring_redis_sample.git)
+- [View sample](https://github.com/lequanghiep74/spring_redis_sample)
