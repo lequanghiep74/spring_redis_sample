@@ -3,6 +3,7 @@ package com.yofiv.example.redis.repo;
 import com.yofiv.example.redis.entity.Bus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.query.SortQueryBuilder;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
