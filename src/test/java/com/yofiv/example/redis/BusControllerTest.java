@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import java.util.Date;
 
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -66,16 +67,26 @@ public class BusControllerTest
     public void saveBus()
             throws Exception
     {
-        Bus bus = new Bus();
-        bus.setPlateNo("A");
-        bus.setLocation(new Point(1, 1));
-        bus.setNumPassenger(10);
-        bus.setCreatedDate(new Date());
-        busRepository.save(bus);
+        Bus bus = createBus(new Date());
 
         restAreaMockMvc.perform(get("/api/bus/fetch"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$.[*].id").value(hasItem(bus.getId())));
+    }
+
+    @Test
+    public void deleteBus()
+            throws Exception
+    {
+        Bus bus = createBus(new Date());
+        busRepository.delete(bus);
+
+        restAreaMockMvc.perform(get("/api/bus/fetch"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(0)));
     }
 
 
@@ -84,12 +95,7 @@ public class BusControllerTest
             throws Exception
     {
         for (int i = 0; i < 10000; i++) {
-            Bus bus = new Bus();
-            bus.setPlateNo("A");
-            bus.setLocation(new Point(1, 1));
-            bus.setNumPassenger(10);
-            bus.setCreatedDate(new Date());
-            busRepository.save(bus);
+            createBus(new Date());
         }
 
         restAreaMockMvc.perform(get("/api/bus/fetch"))
@@ -103,12 +109,11 @@ public class BusControllerTest
             throws Exception
     {
         for (int i = 0; i < 100; i++) {
-            Bus bus = new Bus();
-            bus.setPlateNo("A");
-            bus.setLocation(new Point(1, 1));
-            bus.setNumPassenger(10);
-            bus.setCreatedDate(new Date(1510304317070l));
-            busRepository.save(bus);
+            Bus bus = createBus(new Date());
+            busCustomRepository.addBusToSearchByCreatedDate(bus.getId(), bus.getCreatedDate().getTime());
+        }
+        for (int i = 0; i < 100; i++) {
+            Bus bus = createBus(new Date(1510304317070l));
             busCustomRepository.addBusToSearchByCreatedDate(bus.getId(), 1510304317070l);
         }
         Bus bus = new Bus();
@@ -125,5 +130,16 @@ public class BusControllerTest
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(100)));
+    }
+
+    private Bus createBus(Date date)
+    {
+        Bus bus = new Bus();
+        bus.setPlateNo("A");
+        bus.setLocation(new Point(1, 1));
+        bus.setNumPassenger(10);
+        bus.setCreatedDate(date);
+        busRepository.save(bus);
+        return bus;
     }
 }
